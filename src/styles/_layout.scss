@@ -1,0 +1,209 @@
+html {
+  color: $black;
+  font-size: 1em;
+  line-height: 1.2;
+}
+body {
+  font-family: 'Dosis', sans-serif;
+  background-color: $bg;
+  color: $text-color;
+  overflow-y: scroll;
+  margin: 0;
+
+  a {
+    text-decoration: none;
+  }
+
+  
+}
+
+#app {
+  margin: 0 0;
+  .header {
+    background-color: $nav-bg;
+    position: fixed;
+    z-index: 999;
+    top: 0;
+    left: 0;
+    right: 0;
+    //border-bottom: $bar-width solid black;
+    .inner {
+      max-width: 70rem;
+      box-sizing: border-box;
+      margin: 0px auto;
+      border-left: .5rem solid transparent;
+      border-right: .5rem solid transparent;
+      position: relative;
+      ul.nav {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-flow: wrap;
+        justify-content: flex-start;
+        border-bottom: $bar-width solid black;
+
+        li {
+          position: relative;
+          display: inline-block;
+          overflow: visible;
+          margin: 0;
+          font-size: 1.6rem;
+          font-weight: 300;
+          padding: 1.3rem 1rem 0;
+          text-align: center;
+          cursor: pointer;
+          transition: all ease 300ms;
+          color: $nav-link-color;
+          background-color: $nav-bg;
+          min-width: 6rem;
+          border: none;
+          text-shadow: 0px 0px 3px $bg;
+          transition: all ease 300ms;
+          border-bottom: 0px solid $yellow;
+          margin-bottom: 0;
+
+          &:hover {
+            color: $nav-link-color-hover;
+            font-weight: 400;
+            background-color: $nav-bg-hover;
+            border-bottom: $bar-width solid $yellow;
+            margin-bottom: 0;
+          }
+          &.logo {
+            padding: 1rem .75rem;
+            &:hover {
+              border-bottom: 0px solid black;
+              margin-bottom: 0;
+            }
+          }
+
+          a {
+            margin: 0;
+          }
+
+
+      
+          &.expanded {
+            overflow:visible;
+          }
+          
+        }
+
+        
+      }
+
+      .controls-left,
+      .controls-right {
+        display: flex;
+        flex-direction: column;
+        display: flex;
+        align-items: center;
+        position: absolute;
+        align-items: center;
+        top: 0;
+        bottom: 0;
+        transition: all ease 300ms;
+        i {
+          color: $black;
+          font-size: 1.4rem;
+          line-height: 2.4rem;
+          margin: 0;
+          width: 2.4rem;
+          height: 2.4rem;
+          text-align: center;
+          cursor: pointer;
+        }
+      }
+      .controls-left {
+        display: none;
+        left: 0;
+        justify-content: center;
+      }
+      .controls-right {
+        right: 0;
+        justify-content: space-between;
+      }
+    }
+  }
+
+  .view {
+    margin: 0 auto;
+    position: relative;
+    overflow: auto;
+    padding: 0;
+    h1 {
+      font-weight: 300;
+      margin: 1rem auto;
+    }
+    p {
+      margin: 1rem auto;
+      font-size: 1.4rem;
+    }
+    &.max-width-desktop,
+    .max-width-desktop {
+      max-width: 68rem;
+      margin-right: auto;
+      margin-left: auto;
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+  }
+}
+
+@media (max-width: $mobile-size) {
+  html {
+    font-size: 1.2em;
+    line-height: 1.2;
+
+    body {
+      // margin: 12rem 0 0;
+    }
+  }
+
+  #app {
+    margin: 0 0;
+    .header {
+        .inner {
+          border-left: 0rem solid transparent;
+          border-right: 0rem solid transparent;
+          ul.nav {
+            border-bottom: $bar-width/2 solid black;
+            li {
+              justify-content: center;
+              justify-content: center;
+              flex-flow: column;
+              display: none;
+
+              &.logo {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin: 0 auto;
+              }
+            }
+          }
+
+          .controls-left,
+          .controls-right {
+            display: flex;
+          } 
+        }
+      }
+      
+      .view {
+        margin: 0 auto;
+        position: relative;
+        overflow: auto;
+        max-width: 68rem;
+        // padding: 0 1rem;
+        padding: 0;
+        border: none;
+      }
+
+      &.max-width-desktop,
+      .max-width-desktop {
+        max-width: 100%;
+
+      }
+  }
+}

@@ -1,0 +1,1 @@
+export const UPDATE_FRAME_SIZE = 'UPDATE_FRAME_SIZE'
