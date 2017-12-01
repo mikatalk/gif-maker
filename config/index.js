@@ -7,7 +7,7 @@ module.exports = {
     index: path.resolve(__dirname, '../dist/index.html'),
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
-    assetsPublicPath: '/',
+    assetsPublicPath: 'https://mikatalk.github.io/gif-maker/',
     // assetsPublicPath: '/vuex-dashboard/',
     productionSourceMap: true,
     // Gzip off by default as many popular static hosts such as

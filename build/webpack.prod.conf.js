@@ -98,18 +98,18 @@ var webpackConfig = merge(baseWebpackConfig, {
         ignore: ['.*']
       }
     ]),
-    new PrerenderSpaPlugin(
-      // Absolute path to compiled SPA
-      path.resolve(__dirname, '../dist'),
-      // List of routes to prerender
-      [ '/1', '/2' ],
-      {
-        // options
-        // Path of index file. By default it's index.html in static root. 
-        indexPath: path.resolve(__dirname, '../dist/index.html'),
+  //   new PrerenderSpaPlugin(
+  //     // Absolute path to compiled SPA
+  //     path.resolve(__dirname, '../dist'),
+  //     // List of routes to prerender
+  //     [ '/1', '/2' ],
+  //     {
+  //       // options
+  //       // Path of index file. By default it's index.html in static root. 
+  //       indexPath: path.resolve(__dirname, '../dist/index.html'),
 
-      }
-    ),
+  //     }
+  //   ),
   ]
 })
 

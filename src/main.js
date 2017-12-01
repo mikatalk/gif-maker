@@ -1,5 +1,8 @@
 // import './styles/main.scss'
 
+// eslint-disable-next-line
+const Worker = require('worker-loader!./../node_modules/gif.js/dist/gif.worker.js')
+
 import Vue from 'vue'
 import App from './App.vue'
 import { createStore } from './store'

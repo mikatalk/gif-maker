@@ -1,12 +1,15 @@
 <template>
   <div class="webgl-canvas" ref="container">
-    <canvas ref="canvas" v-bind:style="{ transform: 'scale('+canvasScale+')'}" :width="frameWidth" :height="frameHeight"></canvas>
+    <canvas ref="canvas"
+            :width="frameWidth" 
+            :height="frameHeight"></canvas>
   </div>
 </template>
 
 <script>
 
 import { mapGetters } from 'vuex'
+const { GLLayer } = require('./../shaders/GLLayer')
 
 export default {
   name: 'webgl-canvas',
@@ -23,18 +26,47 @@ export default {
       'frameWidth',
       'frameHeight'
     ])
+  },
 
+  mounted () {
+    this.gl = new GLLayer(this.$refs.canvas)
+    this.running = true
+    this.gl.renderLoopGif()
+    this.tick()
+    // this.$store.dispatch('setRenderer', this.gl.renderer)
+  },
+
+  beforeDestroy () {
+    // this.gl.unload()
+    // this.running = false
   },
 
   watch: {
-    frameWidth (newValue, oldValue) {
-      // console.log('::>')
-      // this.canvasScale = 0.2
-      // TO DO adjust scale to fit window
+    frameWidth (newWidth, oldWidth) {
+      this.handleResize()
+    },
+    frameHeight (newHeight, oldHeight) {
+      this.handleResize()
+    }
+  },
 
+  methods: {
+    tick () {
+      if (!this.running) return
+      requestAnimationFrame(() => this.tick())
+      let time = performance.now()
+      this.gl.update(time, this.pageScrollRatio)
+    },
+
+    handleResize () {
+      // console.log('RESIZE!', this.frameWidth, this.frameHeight)      // // handle resize
+      // const width = this.$refs.container.getBoundingClientRect().width
+      // const height = this.$refs.container.getBoundingClientRect().height
+      this.$refs.canvas.width = this.frameWidth
+      this.$refs.canvas.height = this.frameHeight
+      this.gl.handleResize(this.frameWidth, this.frameHeight)
     }
   }
-
   // computed: {
   //   ...mapGetters([
   //     'stageWidth',
@@ -59,11 +91,14 @@ export default {
 // @import "../styles/variables";
 
 .webgl-canvas { 
+  pointer-events: none;
   // overflow: hidden;
   margin: 10px 0;
   padding: 0;
   border: none;
   canvas{
+  pointer-events: none;
+
     background: #cccccc;
 display: block;
 

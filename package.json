@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "font-awesome": "^4.7.0",
+    "gif.js": "https://github.com/jnordberg/gif.js/",
     "orbit-controls": "^1.2.0",
     "prerender-spa-plugin": "^2.1.0",
     "randomcolor": "^0.5.3",
@@ -96,7 +97,8 @@
     "webpack-bundle-analyzer": "^2.2.1",
     "webpack-dev-middleware": "^1.10.0",
     "webpack-hot-middleware": "^2.18.0",
-    "webpack-merge": "^4.1.0"
+    "webpack-merge": "^4.1.0",
+    "worker-loader": "^1.1.0"
   },
   "engines": {
     "node": ">= 4.0.0",

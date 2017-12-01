@@ -1,6 +1,9 @@
+/* eslint-disable */
+
 const THREE = require('three')
 const { deepDispose } = require('./../util/deep-dispose')
 import randomcolor from 'randomcolor'
+import GIF from 'gif.js'
 
 const vertex = `
   varying vec2 vUv;
@@ -125,21 +128,29 @@ export class GLLayer {
     this.renderer = new THREE.WebGLRenderer({
       canvas: this.canvas,
       antialias: true,
-      alpha: true,
-      autoClear: false
+      // alpha: true,
+      autoClear: false,
+      preserveDrawingBuffer: true
     })
-    this.renderer.setSize(window.innerWidth, window.innerHeight)
+    this.renderer.setSize(this.canvas.width, this.canvas.height)
+    // this.renderer.setSize(window.innerWidth, window.innerHeight)
     // this.renderer.setClearColor(0xffffff)
     // this.renderer.setClearColor(0x130c25)
-    // this.renderer.setClearColor(0xffffff, 0)
+    this.renderer.setClearColor(0xffffff, 1)
     // this.renderer.autoClear = false;
     // this.renderer.setPixelRatio(0.1)
     // this.renderer.setPixelRatio(0.5)
-    this.renderer.setPixelRatio(window.devicePixelRatio || 1)
+    // this.renderer.setPixelRatio(window.devicePixelRatio || 1)
+    this.renderer.setPixelRatio(1)
 
     // document.addEventListener('mousemove', () => this.onDocumentMouseMove(), false)
     // window.addEventListener('resize', this.handleResize.bind(this), false)
   }
+
+  // getContext () {
+  //   console.log('...!', this.canvas, this.canvas.getContext('2d'))
+  //   return this.canvas.getContext('2d')
+  // }
 
   unload () {
     // document.addEventListener('mousemove', this.onDocumentMouseMove.bind(this), false)
@@ -185,9 +196,65 @@ export class GLLayer {
   }
 
   update (elapsedTime, scrollRatio) {
-    this.renderer.setClearColor(0xffffffff, 0)
-    this.renderer.render(this.scene, this.camera)
+    // this.renderer.setClearColor(0xffffffff, 0)
     this.material.uniforms.elapsedTime.value = elapsedTime * 0.001
     this.material.uniforms.scrollRatio.value = scrollRatio
+    this.renderer.render(this.scene, this.camera)
+  }
+
+  renderLoopGif () {
+    const gif = new GIF({
+      workers: 2,
+      quality: 10
+    })
+
+    function* idMaker () {
+      let i = 0
+      let l = 5
+
+      while (i <= l) {
+        yield i / (l - 1)
+        i++
+      }
+    }
+
+    var gen = idMaker();
+
+    console.log(gen.next().value); // 0
+    console.log(gen.next().value); // 1
+    console.log(gen.next().value); // 2
+    console.log(gen.next().value); // undefined
+    console.log(gen.next().value); // undefined
+
+
+    // // ...
+    for (let i = 0, l = 5; i < l; i++) {
+      this.update(i / l, 0)
+      // console.log(gif, i / (l - 1))
+      let img = new Image()
+      img.src = document.querySelector('.webgl-canvas canvas').toDataURL()
+      img.onload = () => {
+      //   this.$store.dispatch('addFrame', img)
+      //   // document.body.appendChild(img)
+        gif.addFrame(img)
+      }
+      // gif.addFrame(document.querySelector('.webgl-canvas canvas').toDataURL())
+      //     // console.log('NEW IMAGE', state.frame.gif)
+      //   // gif.addFrame(image)
+      // },
+
+      // [types.RENDER_GIF] (state) {
+      //   // gif.on('finished', (blob) => {
+      //   //   // window.open(URL.createObjectURL(blob))
+      //   //   let img = new Image()
+      //   //   img.src = URL.createObjectURL(blob)
+      //   //   img.onload = () => {
+      //   //     console.log('done')
+      //   //     document.body.appendChild(img)
+      //   //   }
+      //   // })
+      //   // gif.render()
+      // }
+    }
   }
 }

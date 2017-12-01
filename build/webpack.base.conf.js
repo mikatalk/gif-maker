@@ -28,6 +28,15 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.worker\.js$/,
+        use: { 
+          loader: 'worker-loader',
+          options: { name: 'gif.worker.js' }
+          // options: { name: 'gif.worker.[hash].js' }
+          // options: { inline: true, fallback: false }
+        }
+      },
+      {
         test: /\.(js|vue)$/,
         loader: 'eslint-loader',
         enforce: 'pre',

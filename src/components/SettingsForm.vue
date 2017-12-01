@@ -14,6 +14,7 @@
            max="1000" 
            maxlength="4"/>
     
+    
    <!--  <button @click="toggle=!toggle">Toggle</button>
     <transition name="demo">
       <h3 v-show="toggle">Toggle Transition</h3>
