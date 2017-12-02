@@ -8,8 +8,8 @@
         <span>Gif Maker</span>
       </h1>
     </header>
-        <button @click="addFrame()">Add Frame</button>
-        <button @click="renderGif()">Render GIF</button>
+        <!-- <button @click="addFrame()">Add Frame</button> -->
+        <!-- <button @click="renderGif()">Render GIF</button> -->
 
 
     <settings-form></settings-form>
@@ -70,17 +70,17 @@ export default {
     }
   },
   methods: {
-    addFrame () {
-      let img = new Image()
-      img.src = document.querySelector('.webgl-canvas canvas').toDataURL()
-      img.onload = () => {
-        this.$store.dispatch('addFrame', img)
-        // document.body.appendChild(img)
-      }
-    },
-    renderGif () {
-      this.$store.dispatch('renderGif')
-    }
+    // addFrame () {
+    //   let img = new Image()
+    //   img.src = document.querySelector('.webgl-canvas canvas').toDataURL()
+    //   img.onload = () => {
+    //     this.$store.dispatch('addFrame', img)
+    //     // document.body.appendChild(img)
+    //   }
+    // },
+    // renderGif () {
+    //   this.$store.dispatch('renderGif')
+    // }
   }
 }
 </script>

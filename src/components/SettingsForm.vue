@@ -6,7 +6,9 @@
            type="number" 
            max="1000" 
            maxlength="4"/>
+    
     <br/>
+
     <label>Height:</label>
     <input :value="frameHeight" 
            @input="updateHeight" 
@@ -14,7 +16,14 @@
            max="1000" 
            maxlength="4"/>
     
+    <br/>
+
+    <label>Shader:</label>
+    <textarea :value="shaderCode" 
+           @input="updateShaderCode" 
+           type="text" />
     
+
    <!--  <button @click="toggle=!toggle">Toggle</button>
     <transition name="demo">
       <h3 v-show="toggle">Toggle Transition</h3>
@@ -39,7 +48,8 @@ export default {
   computed: {
     ...mapGetters([
       'frameWidth',
-      'frameHeight'
+      'frameHeight',
+      'shaderCode'
     ])
   },
 
@@ -49,6 +59,9 @@ export default {
     },
     updateHeight (event) {
       this.$store.dispatch('updateFrameSize', {height: event.target.value})
+    },
+    updateShaderCode (event) {
+      // this.$store.dispatch('updateShaderCode', {height: event.target.value})
     }
   }
 }

@@ -52,7 +52,7 @@ const fragment = `
 
 // float num = 1. + 1. * ( 1.0 + sin(mix(uv.x, uv.y, .5))) / 2.0;
 // float num = 10. + 4. * ( 1.0 + sin(length(vUv + vec2(.5)))) / 2.0;
-float num = 7.;
+float num = 2.;
 
     // repeat
     uv = repeat(uv, vec2(num));
@@ -204,57 +204,111 @@ export class GLLayer {
 
   renderLoopGif () {
     const gif = new GIF({
-      workers: 2,
-      quality: 10
+      workers: 8,
+      quality: 5
     })
 
     function* idMaker () {
       let i = 0
-      let l = 5
+      let l = 18
 
-      while (i <= l) {
+      while (i < l) {
         yield i / (l - 1)
         i++
       }
     }
 
-    var gen = idMaker();
+    let gen = idMaker()
 
-    console.log(gen.next().value); // 0
-    console.log(gen.next().value); // 1
-    console.log(gen.next().value); // 2
-    console.log(gen.next().value); // undefined
-    console.log(gen.next().value); // undefined
+    while ( true ) {
+      let value = gen.next().value;
+      if (isNaN(value)) {
+        // gif.render()
+        break;
+      }
 
-
-    // // ...
-    for (let i = 0, l = 5; i < l; i++) {
-      this.update(i / l, 0)
+      this.update(value * 300., 0)
       // console.log(gif, i / (l - 1))
       let img = new Image()
       img.src = document.querySelector('.webgl-canvas canvas').toDataURL()
       img.onload = () => {
       //   this.$store.dispatch('addFrame', img)
       //   // document.body.appendChild(img)
-        gif.addFrame(img)
-      }
-      // gif.addFrame(document.querySelector('.webgl-canvas canvas').toDataURL())
-      //     // console.log('NEW IMAGE', state.frame.gif)
-      //   // gif.addFrame(image)
-      // },
+        gif.addFrame(img, {delay: 40, dispose: -1})
+        console.log('Add at', value)
+        if (value === 1) {
 
-      // [types.RENDER_GIF] (state) {
-      //   // gif.on('finished', (blob) => {
-      //   //   // window.open(URL.createObjectURL(blob))
-      //   //   let img = new Image()
-      //   //   img.src = URL.createObjectURL(blob)
-      //   //   img.onload = () => {
-      //   //     console.log('done')
-      //   //     document.body.appendChild(img)
-      //   //   }
-      //   // })
-      //   // gif.render()
-      // }
+          gif.on('finished', (blob) => {
+            // window.open(URL.createObjectURL(blob))
+            let img = new Image()
+            img.src = URL.createObjectURL(blob)
+            img.onload = () => {
+              console.log('done')
+              document.body.appendChild(img)
+            }
+          })
+
+          gif.render()
+          console.log('Render')
+        }
+      }
+
     }
+//     let value = gen.next().value
+//     while(!isNaN(value)) {
+//       // console.log('val:', val)
+// // 
+//       this.update(value, 0)
+//       // console.log(gif, i / (l - 1))
+//       let img = new Image()
+//       img.src = document.querySelector('.webgl-canvas canvas').toDataURL()
+//       img.onload = () => {
+//       //   this.$store.dispatch('addFrame', img)
+//       //   // document.body.appendChild(img)
+//         gif.addFrame(img)
+//         console.log('HA', val)
+//         if (val === 1) {
+//           gif.render()
+//         }
+//       }
+//       val = gen.next().value
+//     }
+    //   // console.log(gen.next().value); // 0
+    // console.log(gen.next().value); // 1
+    // console.log(gen.next().value); // 2
+    // console.log(gen.next().value); // undefined
+    // console.log(gen.next().value); // undefined
+    // console.log(gen.next().value); // undefined
+
+
+    // // // ...
+    // for (let i = 0, l = 5; i < l; i++) {
+    //   this.update(i / l, 0)
+    //   // console.log(gif, i / (l - 1))
+    //   let img = new Image()
+    //   img.src = document.querySelector('.webgl-canvas canvas').toDataURL()
+    //   img.onload = () => {
+    //   //   this.$store.dispatch('addFrame', img)
+    //   //   // document.body.appendChild(img)
+    //     gif.addFrame(img)
+    //   }
+    //   // gif.addFrame(document.querySelector('.webgl-canvas canvas').toDataURL())
+    //   //     // console.log('NEW IMAGE', state.frame.gif)
+    //   //   // gif.addFrame(image)
+    //   // },
+
+    //   // [types.RENDER_GIF] (state) {
+    //   //   // gif.on('finished', (blob) => {
+    //   //   //   // window.open(URL.createObjectURL(blob))
+    //   //   //   let img = new Image()
+    //   //   //   img.src = URL.createObjectURL(blob)
+    //   //   //   img.onload = () => {
+    //   //   //     console.log('done')
+    //   //   //     document.body.appendChild(img)
+    //   //   //   }
+    //   //   // })
+    //   //   // gif.render()
+    //   // }
+    // }
   }
 }

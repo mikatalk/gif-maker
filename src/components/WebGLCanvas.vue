@@ -1,12 +1,17 @@
 <template>
-  <div class="webgl-canvas" ref="container">
+  <div class="webgl-canvas" ref="container" @click="renderGIF()">
     <canvas ref="canvas"
             :width="frameWidth" 
             :height="frameHeight"></canvas>
+    
+    <btn v-on:click="renderGIF()" icon="mustache">Render</btn>
+
   </div>
 </template>
 
 <script>
+// import _ from 'lodash'
+import Btn from './../components/Btn.vue'
 
 import { mapGetters } from 'vuex'
 const { GLLayer } = require('./../shaders/GLLayer')
@@ -14,10 +19,15 @@ const { GLLayer } = require('./../shaders/GLLayer')
 export default {
   name: 'webgl-canvas',
 
+  components: {
+    'btn': Btn
+  },
+
   data () {
     return {
       // toggle: true
-      canvasScale: 1
+      // canvasScale: 1
+      gl: this.gl
     }
   },
 
@@ -31,7 +41,7 @@ export default {
   mounted () {
     this.gl = new GLLayer(this.$refs.canvas)
     this.running = true
-    this.gl.renderLoopGif()
+    // this.gl.renderLoopGif()
     this.tick()
     // this.$store.dispatch('setRenderer', this.gl.renderer)
   },
@@ -59,13 +69,20 @@ export default {
     },
 
     handleResize () {
-      // console.log('RESIZE!', this.frameWidth, this.frameHeight)      // // handle resize
-      // const width = this.$refs.container.getBoundingClientRect().width
-      // const height = this.$refs.container.getBoundingClientRect().height
       this.$refs.canvas.width = this.frameWidth
       this.$refs.canvas.height = this.frameHeight
       this.gl.handleResize(this.frameWidth, this.frameHeight)
+    },
+
+    renderGIF () {
+      console.log('___')
+      this.gl.renderLoopGif()
     }
+    // renderGIF: _.debounce(() => {
+    //   // console.log('___')
+    //   this.gl.renderLoopGif()
+    //   // console.log('I only get fired once every two seconds, max!')
+    // }, 2000)
   }
   // computed: {
   //   ...mapGetters([
@@ -91,7 +108,7 @@ export default {
 // @import "../styles/variables";
 
 .webgl-canvas { 
-  pointer-events: none;
+  // pointer-events: none;
   // overflow: hidden;
   margin: 10px 0;
   padding: 0;
