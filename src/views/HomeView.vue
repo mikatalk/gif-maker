@@ -14,7 +14,7 @@
 
     <settings-form></settings-form>
     <webgl-canvas ref="canvas"></webgl-canvas>
-    
+
   </div>
 </template>
 
@@ -108,6 +108,14 @@ export default {
     height: 100vh;
     pointer-events: none;
   }
+}
+img {
+  float: left;
+  margin: 5px
+}
+body {
+  background-position: center;
+  background-size: cover;
 }
 
 </style>

@@ -2,10 +2,11 @@
   <div class="webgl-canvas" ref="container" @click="renderGIF()">
     <canvas ref="canvas"
             :width="frameWidth" 
-            :height="frameHeight"></canvas>
-    
-    <btn v-on:click="renderGIF()" icon="mustache">Render</btn>
+            :height="frameHeight"
+            >
+    </canvas>
 
+    <btn icon="mustache"></btn>
   </div>
 </template>
 
@@ -34,12 +35,15 @@ export default {
   computed: {
     ...mapGetters([
       'frameWidth',
-      'frameHeight'
+      'frameHeight',
+      'shaderCode'
     ])
   },
 
   mounted () {
-    this.gl = new GLLayer(this.$refs.canvas)
+    // console.log('OK?', this.shaderCode)
+    this.gl = new GLLayer(this.$refs.canvas, this.shaderCode)
+    // this.gl = new GLLayer(this.$refs.canvas,_.clone(this.shaderCode))
     this.running = true
     // this.gl.renderLoopGif()
     this.tick()
@@ -57,7 +61,19 @@ export default {
     },
     frameHeight (newHeight, oldHeight) {
       this.handleResize()
+    },
+    shaderCode (newCode, oldCode) {
+      // return _.debounce((newCode, oldCode) => {
+      console.log('REFRESH')
+      // (newCode, oldCode) {
+      this.gl.updateShaderCode(this.shaderCode)
+      // }, 2000)
     }
+    // shaderCode: _.debounce((newCode, oldCode) => {
+    //   console.log('REFRESH')
+    //   // (newCode, oldCode) {
+    //   this.gl.updateShaderCode(newCode)
+    // }, 2000)
   },
 
   methods: {
@@ -75,8 +91,7 @@ export default {
     },
 
     renderGIF () {
-      console.log('___')
-      this.gl.renderLoopGif()
+      this.gl.renderLoopGif(performance.now())
     }
     // renderGIF: _.debounce(() => {
     //   // console.log('___')
@@ -108,24 +123,16 @@ export default {
 // @import "../styles/variables";
 
 .webgl-canvas { 
-  // pointer-events: none;
-  // overflow: hidden;
   margin: 10px 0;
   padding: 0;
   border: none;
   canvas{
-  pointer-events: none;
-
     background: #cccccc;
-display: block;
-
-//tra
-
-    margin: auto;
-  //  width: 100vw;
-  //  height: 100vh;
+    display: none;
+  }
+  .btn {
+    background: #fafafa;
   }
 }
-
 
 </style>

@@ -4,6 +4,10 @@
 const Worker = require('worker-loader!./../node_modules/gif.js/dist/gif.worker.js')
 
 import Vue from 'vue'
+import VueCodeMirror from 'vue-codemirror'
+
+Vue.use(VueCodeMirror)
+
 import App from './App.vue'
 import { createStore } from './store'
 import { createRouter } from './router'
@@ -57,6 +61,9 @@ const app = new Vue({
   router,
   store,
   render: h => h(App)
+  // components: {
+  //   editor: require('vue-ace-editor')
+  // },
 })
 
 // expose the

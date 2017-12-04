@@ -13,11 +13,16 @@ const vertex = `
   }
 `
 
-const fragment = `
+const fragment = (shaderCode) => `
+
+  precision mediump float;
+  precision mediump int;
+
   uniform float elapsedTime;
   uniform float scrollRatio;
   uniform vec3 color;
-  
+  // attribute vec2 uv;
+
   varying vec2 vUv;
   
   #define PI 3.14
@@ -48,43 +53,9 @@ const fragment = `
 
   void main() {
     float alpha = 0.0;
-    vec2 uv = vUv;
-
-// float num = 1. + 1. * ( 1.0 + sin(mix(uv.x, uv.y, .5))) / 2.0;
-// float num = 10. + 4. * ( 1.0 + sin(length(vUv + vec2(.5)))) / 2.0;
-float num = 2.;
-
-    // repeat
-    uv = repeat(uv, vec2(num));
-    
-    float ratio = (1.0 + sin(elapsedTime))/ 2.0;
-
-    // uv = rotate(uv, -length(vec2(.5) - vUv) * 5.0 * PI - elapsedTime * 3.0);
-    
-    // float angle = mod( -elapsedTime * 3.0 / num, PI) * num;
-    // float angle = mod( 15.0 * PI -elapsedTime * 3.0 / num, PI);
-    float angle = mod(-length(vec2(.5) - uv) * 1.0 * PI - (elapsedTime * 10.0) / num, PI) * num;
-    
-    uv = rotate(uv, angle);
-    
     vec3 c = color;
-    c.r = abs(sin(angle + .0));
-    c.g = abs(sin(angle + .33 ));
-    c.b = abs(sin(angle + .66 ));
 
-    // alpha = rect(uv, vec2(0.1, 1.9));
-
-    // alpha = (sdHexPrism(vec3(1.0, .0, 1.0), uv));
-    // alpha = sdHexPrism(uv.xyx, vec2(1.0, 1.0));
-    alpha = rect(vUv, vec2(1.1, 1.9));
-    
-    if(alpha > 0.999) {
-      c = vec3(0.0);
-      alpha = 1.0;
-      // discard;
-    } else {
-      alpha = 1.0;
-    } 
+    ${shaderCode}
 
     gl_FragColor = clamp(vec4( c, alpha), 0.0, 1.0);
   }
@@ -92,7 +63,7 @@ float num = 2.;
 
 export class GLLayer {
 
-  constructor (canvas) {
+  constructor (canvas, shaderCode) {
     this.canvas = canvas
     let width = canvas.width
     let height = canvas.height
@@ -114,7 +85,7 @@ export class GLLayer {
         // mouseVelocity: {value: new THREE.Vector2(this.previousMouseX, this.previousMouseY)}
       },
       vertexShader: vertex,
-      fragmentShader: fragment,
+      fragmentShader: fragment(shaderCode),
       depthWrite: false,
       transparent: true,
       depthTest: 0.1
@@ -129,8 +100,8 @@ export class GLLayer {
       canvas: this.canvas,
       antialias: true,
       // alpha: true,
-      autoClear: false,
-      preserveDrawingBuffer: true
+      // autoClear: false,
+      // preserveDrawingBuffer: true
     })
     this.renderer.setSize(this.canvas.width, this.canvas.height)
     // this.renderer.setSize(window.innerWidth, window.innerHeight)
@@ -200,17 +171,35 @@ export class GLLayer {
     this.material.uniforms.elapsedTime.value = elapsedTime * 0.001
     this.material.uniforms.scrollRatio.value = scrollRatio
     this.renderer.render(this.scene, this.camera)
+    document.body.style.backgroundImage = `url(${document.querySelector('.webgl-canvas canvas').toDataURL()})`
+  }
+
+  updateShaderCode (code) {
+
+    let gl = this.renderer.getContext()
+    var shader = gl.createShader( gl.FRAGMENT_SHADER );
+    gl.shaderSource( shader, fragment(code) );
+    gl.compileShader( shader );
+    let compiled = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
+    if ( !compiled ) {
+      console.log('- NO -')
+    } else {
+      this.material.fragmentShader = fragment(code)
+      this.material.needsUpdate = true
+      console.log('+ OK +')
+    }  
+   
   }
 
   renderLoopGif () {
     const gif = new GIF({
       workers: 8,
-      quality: 5
+      quality: 10
     })
 
     function* idMaker () {
       let i = 0
-      let l = 18
+      let l = 30
 
       while (i < l) {
         yield i / (l - 1)
@@ -227,7 +216,8 @@ export class GLLayer {
         break;
       }
 
-      this.update(value * 300., 0)
+      let time = performance.now()
+      this.update((time + (value * 300)), 0)
       // console.log(gif, i / (l - 1))
       let img = new Image()
       img.src = document.querySelector('.webgl-canvas canvas').toDataURL()
