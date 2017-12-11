@@ -18,35 +18,60 @@
             maxlength="4"/>
       <button @click="renderGif()">GIF</button>
       <code-editor></code-editor>
-  </section>
-  <section class="preview">
-    <webgl-canvas ref="canvas"></webgl-canvas>
-  </section>
+    </section>
+    <section class="preview">
+      <webgl-canvas ref="canvas"></webgl-canvas>
+    </section>
+    <section class="overlay" v-show="isProcessing">
+      <spinner show=true></spinner>
+    </section>
+    <section 
+      class="overlay" 
+      v-show="isPresenting">
+      <img ref="gif"/>
+      <div class="close-btn" @click="closeModal"/>
+    </section>
   </div>
 </template>
 
 <script>
 
 import { mapGetters } from 'vuex'
+import Spinner from './../components/Spinner.vue'
 import CodeEditor from './../components/CodeEditor.vue'
 import WebGLCanvas from './../components/WebGLCanvas.vue'
 import Btn from './../components/Btn.vue'
 
 export default {
   name: 'home-view',
+  // data () {
+  //   return {
+  //     test: true
+  //   }
+  // },
   components: {
     'btn': Btn,
     'code-editor': CodeEditor,
-    'webgl-canvas': WebGLCanvas
+    'webgl-canvas': WebGLCanvas,
+    'spinner': Spinner
   },
   computed: {
     ...mapGetters([
       'frameWidth',
       'frameHeight',
       'isPortrait',
-      'isLandscape'
-      // 'shaderCode'
+      'isLandscape',
+      'isProcessing',
+      'isPresenting',
+      'frameBlob'
     ])
+  },
+  watch: {
+    isPresenting (newState) {
+      if (newState && this.frameBlob) {
+        this.$refs.gif.src = this.frameBlob
+      }
+    }
   },
   methods: {
     updateWidth (event) {
@@ -55,34 +80,24 @@ export default {
     updateHeight (event) {
       this.$store.dispatch('updateFrameSize', {height: event.target.value})
     },
-    // addFrame () {
-    //   let img = new Image()
-    //   img.src = document.querySelector('.webgl-canvas canvas').toDataURL()
-    //   img.onload = () => {
-    //     this.$store.dispatch('addFrame', img)
-    //     // document.body.appendChild(img)
-    //   }
-    // },
     renderGif () {
-      console.log('### TODO ### move render to state')
-      // this.$store.dispatch('renderGif')
+      this.$store.dispatch('renderGif')
+    },
+    closeModal () {
+      this.$store.dispatch('setRunModeDefault')
     }
   }
 }
 </script>
 
 <style lang="scss">
-
 .home-view {
-
-
   &.portrait {
     .ui,
     .preview {
       width: 100vw;
       height: 50vh;
-  
-  }
+    }
   }
   &.landscape {
     .ui,
@@ -99,21 +114,7 @@ export default {
     position: fixed;
     top: 0;
     left: 0;
-// border: 5px solid red;
-box-sizing: border-box;
-    // header {
-    //   min-height: 40px;
-
-    //   .btn,
-    //   h1 {
-    //     display: inline-block;
-    //     height: auto;
-    //     vertical-align: center;
-    //     margin: 0px;
-    //   }
-    // }
-
-    // input[ref=inputFrameWidth] 
+    
     input.for-frame-width,
     input.for-frame-height {
       width: 50px;
@@ -126,27 +127,42 @@ box-sizing: border-box;
     position: fixed;
     bottom: 0;
     right: 0;
-//  border: 5px solid yellow;
-  box-sizing: border-box;
-     
+    .preview-inner {
+
+    }
   }
 
-  // .bg-gif {
-  //   position: fixed;
-  //   top: 0;
-  //   left: 0;
-  //   width: 100vw;
-  //   height: 100vh;
-  //   pointer-events: none;
-  // }
-  // .gif-bg {
-  //   position: fixed;
-  //   left: 0;
-  //   top: 0;
-  //   width: 100vw;
-  //   height: 100vh;
-    
-  // }
+  .overlay {
+    left: 0;
+    right: 0;
+    top: -100px;
+    bottom: -100px;
+    position: fixed;
+    box-sizing: border-box;
+    background: rgba(0, 0, 0, .96);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .close-btn {
+      position: fixed;
+      top: 10px;
+      right: 20px;
+      &:before,
+      &:after {
+        content: ' ';
+        display: block;
+        position: absolute;
+        background: white;
+        width: 3px;
+        height: 20px;
+        transform-origin: center;
+        transform: rotate(45deg);
+      }
+      &:after {
+        transform: rotate(-45deg);        
+      }
+    }
+  }
 }
 img {
   float: left;

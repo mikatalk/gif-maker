@@ -44,7 +44,8 @@ export default {
       'isPortrait',
       'frameWidth',
       'frameHeight',
-      'shaderCode'
+      'shaderCode',
+      'isProcessing'
     ])
   },
 
@@ -83,6 +84,12 @@ export default {
       // (newCode, oldCode) {
       this.gl.updateShaderCode(this.shaderCode)
       // }, 2000)
+    },
+    isProcessing (newState) {
+      if (newState) {
+        this.gl.renderLoopGif(performance.now())
+          .then((blob) => this.$store.dispatch('presentGif', {blob: blob}))
+      }
     }
     // shaderCode: _.debounce((newCode, oldCode) => {
     //   console.log('REFRESH')
@@ -94,9 +101,13 @@ export default {
   methods: {
     tick () {
       if (!this.running) return
+      if (this.isProcessing) {
+
+      } else {
+        let time = performance.now()
+        this.gl.update(time, this.pageScrollRatio)
+      }
       requestAnimationFrame(() => this.tick())
-      let time = performance.now()
-      this.gl.update(time, this.pageScrollRatio)
     },
 
     handleResize () {
@@ -124,11 +135,11 @@ export default {
       left = Math.round(left * 100) / 100
       top = Math.round(top * 100) / 100
       this.cssTransform = `scale(${scale}) translate(${left}px, ${top}px)`
-    },
-
-    renderGIF () {
-      this.gl.renderLoopGif(performance.now())
     }
+
+    // renderGIF () {
+    //   this.gl.renderLoopGif(performance.now())
+    // }
     // renderGIF: _.debounce(() => {
     //   // console.log('___')
     //   this.gl.renderLoopGif()
@@ -141,7 +152,6 @@ export default {
   //     'stageHeight'
   //   ])
   // },
-
   // methods: {
   //   updateWidth (event) {
   //     this.$store.dispatch('updateStageSize', {width: event.target.value})

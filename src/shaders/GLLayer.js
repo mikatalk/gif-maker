@@ -196,48 +196,54 @@ export class GLLayer {
   }
 
   renderLoopGif () {
-    const gif = new GIF({
-      workers: 8,
-      quality: 10
-    })
+    return new Promise((resolve, fail) => {
 
-    function* timeIntervalGenerator (max) {
-      let i = 0
-      while (i < max) {
-        yield i / (max - 1)
-        i++
-      }
-    }
+      
+      const gif = new GIF({
+        workers: 8,
+        quality: 10
+      })
 
-    let gen = timeIntervalGenerator(30)
-
-    while ( true ) {
-      let value = gen.next().value;
-      if (isNaN(value)) {
-        break;
-      }
-
-      let time = performance.now()
-      this.update((time + (value * 300)), 0)
-      let img = new Image()
-      img.src = this.glCanvas.toDataURL()
-      img.onload = () => {
-        gif.addFrame(img, {delay: 40, dispose: -1})
-        console.log('Add at', value)
-        if (value === 1) {
-          gif.on('finished', (blob) => {
-            // window.open(URL.createObjectURL(blob))
-            let img = new Image()
-            img.src = URL.createObjectURL(blob)
-            img.onload = () => {
-              console.log('done')
-              document.body.appendChild(img)
-            }
-          })
-          gif.render()
-          console.log('Rendering gif...')
+      function* timeIntervalGenerator (max) {
+        let i = 0
+        while (i < max) {
+          yield i / (max - 1)
+          i++
         }
       }
-    }
+
+      let gen = timeIntervalGenerator(30)
+
+      while ( true ) {
+        let value = gen.next().value;
+        if (isNaN(value)) {
+          break;
+        }
+
+        let time = performance.now()
+        this.update((time + (value * 300)), 0)
+        let img = new Image()
+        img.src = this.glCanvas.toDataURL()
+        img.onload = () => {
+          gif.addFrame(img, {delay: 40, dispose: -1})
+          console.log('Add at', value)
+          if (value === 1) {
+            gif.on('finished', (blob) => {
+              // window.open(URL.createObjectURL(blob))
+              resolve(URL.createObjectURL(blob))
+              // let img = new Image()
+              // img.src = URL.createObjectURL(blob)
+              // img.onload = () => {
+              //   console.log('done')
+              //   // document.body.appendChild(img)
+              //   resolve(img)
+              // }
+            })
+            gif.render()
+            console.log('Rendering gif...')
+          }
+        }
+      }
+    })
   }
 }

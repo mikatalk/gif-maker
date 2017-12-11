@@ -33,6 +33,8 @@
     "vuex-router-sync": "^4.3.2"
   },
   "devDependencies": {
+    "stylus": "^0.54.5",
+    "stylus-loader": "^3.0.1",
     "autoprefixer": "^7.1.2",
     "babel-core": "^6.22.1",
     "babel-eslint": "^7.1.1",

@@ -1,5 +1,6 @@
 export const WINDOW_UPDATE_SIZE = 'WINDOW_UPDATE_SIZE'
 export const UPDATE_FRAME_SIZE = 'UPDATE_FRAME_SIZE'
-// export const ADD_FRAME = 'ADD_FRAME'
-// export const RENDER_GIF = 'RENDER_GIF'
+export const RENDER_GIF = 'RENDER_GIF'
+export const PRESENT_GIF = 'PRESENT_GIF'
+export const SET_RUN_MODE_DEFAULT = 'SET_RUN_MODE_DEFAULT'
 export const UPDATE_SHADER_CODE = 'UPDATE_SHADER_CODE'
