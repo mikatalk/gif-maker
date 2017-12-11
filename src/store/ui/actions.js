@@ -18,5 +18,11 @@ export default {
   },
   updateShaderCode ({ commit }, code) {
     commit(types.UPDATE_SHADER_CODE, { code })
+  },
+  approveShader ({ commit }) {
+    commit(types.APPROVE_SHADER)
+  },
+  rejectShader ({ commit }) {
+    commit(types.REJECT_SHADER)
   }
 }

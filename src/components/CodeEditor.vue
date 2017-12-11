@@ -2,8 +2,10 @@
   <div 
     class="code-editor"
     v-bind:class="{ 
-      portrait: isPortrait, 
-      landscape: isLandscape 
+      'portrait': isPortrait, 
+      'landscape': isLandscape,
+      'valid-shader': shaderIsValid,
+      'invalid-shader': !shaderIsValid,
     }"
   >
     <codemirror 
@@ -87,7 +89,8 @@ export default {
     ...mapGetters([
       'isPortrait',
       'isLandscape',
-      'shaderCode'
+      'shaderCode',
+      'shaderIsValid'
     ]),
     editor () {
       return this.$refs.codeEditor.editor
@@ -102,7 +105,6 @@ export default {
       this.$store.dispatch('updateFrameSize', {height: event.target.value})
     },
     updateShaderCode (code) {
-      console.log('event:', code)
       this.$store.dispatch('updateShaderCode', {code: code})
     },
     onEditorReady (editor) {
@@ -128,8 +130,34 @@ export default {
   // height: auto;
   max-height: 100%;
   height: calc(100% - 32px);
+  border: 2px solid transparent;
+
   .CodeMirror.cm-s-default {
     height: 100%;
+  }
+
+  &.valid-shader {
+    animation: blink-green 250ms 1;
+    .CodeMirror.cm-s-default .CodeMirror-gutters {
+      background: rgba(255, 0 , 0, 0);
+    }
+  }
+  &.invalid-shader {
+    animation: blink-red 250ms 1;
+    .CodeMirror.cm-s-default .CodeMirror-gutters {
+      background: rgba(255, 0 , 0, 0.4);
+    }
+  }
+
+  @keyframes blink-red {
+    to {
+      border: 2px solid red;
+    }
+  }
+  @keyframes blink-green {
+    to {
+      border: 2px solid green;
+    }
   }
   /*
   .demo-enter-active {

@@ -14,6 +14,7 @@ export default {
     width: 320,
     height: 320,
     blob: null,
+    shaderIsValid: true,
     shaderCode: `
 void main() {
   float elapsedTime = uElapsedTime;

@@ -65,8 +65,9 @@ const fragment = (shaderCode) => `
 
 export class GLLayer {
 
-  constructor (canvas, shaderCode) {
+  constructor ($store, canvas, shaderCode) {
 
+    this.$store = $store
     this.glCanvas = document.querySelector('.webgl-canvas canvas')
 
     this.canvas = canvas
@@ -156,10 +157,12 @@ export class GLLayer {
     gl.compileShader( shader );
     let compiled = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
     if ( !compiled ) {
+      this.$store.dispatch('rejectShader')
       console.log('- NO -')
     } else {
       this.material.fragmentShader = fragment(code)
       this.material.needsUpdate = true
+      this.$store.dispatch('approveShader', true)
       console.log('+ OK +')
     }  
   }

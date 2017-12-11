@@ -49,14 +49,10 @@ export default {
   },
 
   mounted () {
-    // console.log('OK?', this.shaderCode)
-    this.gl = new GLLayer(this.$refs.canvas, this.shaderCode)
+    this.gl = new GLLayer(this.$store, this.$refs.canvas, this.shaderCode)
     this.handleResize()
-    // this.gl = new GLLayer(this.$refs.canvas,_.clone(this.shaderCode))
     this.running = true
-    // this.gl.renderLoopGif()
     this.tick()
-    // this.$store.dispatch('setRenderer', this.gl.renderer)
   },
 
   beforeDestroy () {

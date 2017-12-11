@@ -27,5 +27,13 @@ export default {
 
   [types.SET_RUN_MODE_DEFAULT] (state) {
     state.runMode = modes.RUN_MODE_DEFAULT
+  },
+
+  [types.APPROVE_SHADER] (state) {
+    state.frame.shaderIsValid = true
+  },
+
+  [types.REJECT_SHADER] (state) {
+    state.frame.shaderIsValid = false
   }
 }
