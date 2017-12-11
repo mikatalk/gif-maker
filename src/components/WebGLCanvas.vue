@@ -2,7 +2,6 @@
   <div 
     class="webgl-canvas" 
     ref="container"
-    @click="renderGIF()"
   >
     <canvas 
       ref="canvas"

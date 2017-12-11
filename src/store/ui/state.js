@@ -22,11 +22,17 @@ void main() {
   vec3 color = uColor;
   float alpha = 1.0;
 
-  color.g *= mod(uv.x + loopRatio, 1.0);
-  color.b *= mod(uv.y + loopRatio, 1.0);
+  float num = 3.;
+  uv = rotate(uv, (1.0 + sin(loopRatio*PI))/2.);
+  uv = repeat(uv, vec2(num));
+  float angle = 2. *PI * mod(-length(vec2(.5) - uv)- (loopRatio*PI) * .25, 1.);
+
+  color.r = abs(sin(angle + .0 * PI));
+  color.g = abs(sin(angle + .33 * PI ));
+  color.b = abs(sin(angle + .66 * PI ));
 
   gl_FragColor = clamp(vec4( color, alpha), 0.0, 1.0);
-}
+}   
 `
 //     shaderCode: `
 // vec2 uv = vUv;

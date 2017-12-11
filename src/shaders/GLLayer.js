@@ -168,7 +168,7 @@ export class GLLayer {
     return new Promise((resolve, fail) => {
       const gif = new GIF({
         workers: 8,
-        quality: 10
+        quality: 1
       })
 
       function* timeIntervalGenerator (max) {
@@ -192,7 +192,7 @@ export class GLLayer {
         let img = new Image()
         img.src = this.glCanvas.toDataURL()
         img.onload = () => {
-          gif.addFrame(img, {delay: 40, dispose: -1})
+          gif.addFrame(img, {delay: 80, dispose: -1})
           console.log('Add at', value)
           if (value === 1) {
             gif.on('finished', (blob) => {

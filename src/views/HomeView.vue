@@ -146,8 +146,8 @@ export default {
     .close-btn {
       position: fixed;
       top: 10px;
-      right: 20px;
-      width: 20px;
+      right: 10px;
+      width: 30px;
       height: 30px;
       border-radius: 5px;
       transition: all ease 250ms;
