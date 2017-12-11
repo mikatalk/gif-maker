@@ -18,9 +18,9 @@ const fragment = (shaderCode) => `
   precision mediump float;
   precision mediump int;
 
-  uniform float elapsedTime;
-  uniform float scrollRatio;
-  uniform vec3 color;
+  uniform float uElapsedTime;
+  uniform float uLoopRatio;
+  uniform vec3 uColor;
   // attribute vec2 uv;
 
   varying vec2 vUv;
@@ -52,12 +52,14 @@ const fragment = (shaderCode) => `
 
 
   void main() {
-    float alpha = 0.0;
-    vec3 c = color;
+    // float alpha = 1.0;
+    // vec3 color = uColor;
+    // float elapsedTime = uElapsedTime;
+    // float loopRatio = uLoopRatio;
 
     ${shaderCode}
 
-    gl_FragColor = clamp(vec4( c, alpha), 0.0, 1.0);
+    // gl_FragColor = clamp(vec4( color, alpha), 0.0, 1.0);
   }
 `
 
@@ -82,9 +84,9 @@ export class GLLayer {
 
     this.material = new THREE.ShaderMaterial({
       uniforms: {
-        elapsedTime: {value: 0},
-        scrollRatio: {value: 0},
-        color: {value: new THREE.Color(randomcolor())}
+        uElapsedTime: {value: 0},
+        uLoopRatio: {value: 0},
+        uColor: {value: new THREE.Color(randomcolor())}
         // mouse: {value: new THREE.Vector2(this.mouseX, this.mouseY)},
         // mouseVelocity: {value: new THREE.Vector2(this.previousMouseX, this.previousMouseY)}
       },
@@ -116,7 +118,7 @@ export class GLLayer {
     // this.renderer.setPixelRatio(0.1)
     // this.renderer.setPixelRatio(0.5)
     // this.renderer.setPixelRatio(window.devicePixelRatio || 1)
-    this.renderer.setPixelRatio(1)
+    // this.renderer.setPixelRatio(1)
 
     // document.addEventListener('mousemove', () => this.onDocumentMouseMove(), false)
     // window.addEventListener('resize', this.handleResize.bind(this), false)
@@ -170,10 +172,10 @@ export class GLLayer {
     this.renderer.setSize(width, height)
   }
 
-  update (elapsedTime, scrollRatio) {
+  update (elapsedTime, loopRatio) {
     this.renderer.setClearColor(0xffffffff, 0)
-    this.material.uniforms.elapsedTime.value = elapsedTime * 0.001
-    this.material.uniforms.scrollRatio.value = scrollRatio
+    this.material.uniforms.uElapsedTime.value = elapsedTime
+    this.material.uniforms.uLoopRatio.value = loopRatio
     this.renderer.render(this.scene, this.camera)
     // this.gifBgElement.style.backgroundImage = `url(${this.glCanvas.toDataURL()})`
   }
@@ -207,7 +209,8 @@ export class GLLayer {
       function* timeIntervalGenerator (max) {
         let i = 0
         while (i < max) {
-          yield i / (max - 1)
+          yield i / max
+          // yield i / (max - 1)
           i++
         }
       }
@@ -221,7 +224,7 @@ export class GLLayer {
         }
 
         let time = performance.now()
-        this.update((time + (value * 300)), 0)
+        this.update(time, value)
         let img = new Image()
         img.src = this.glCanvas.toDataURL()
         img.onload = () => {

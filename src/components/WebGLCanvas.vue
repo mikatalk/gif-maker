@@ -79,11 +79,7 @@ export default {
       this.handleResize()
     },
     shaderCode (newCode, oldCode) {
-      // return _.debounce((newCode, oldCode) => {
-      // console.log('REFRESH')
-      // (newCode, oldCode) {
       this.gl.updateShaderCode(this.shaderCode)
-      // }, 2000)
     },
     isProcessing (newState) {
       if (newState) {
@@ -91,11 +87,6 @@ export default {
           .then((blob) => this.$store.dispatch('presentGif', {blob: blob}))
       }
     }
-    // shaderCode: _.debounce((newCode, oldCode) => {
-    //   console.log('REFRESH')
-    //   // (newCode, oldCode) {
-    //   this.gl.updateShaderCode(newCode)
-    // }, 2000)
   },
 
   methods: {
@@ -105,7 +96,7 @@ export default {
 
       } else {
         let time = performance.now()
-        this.gl.update(time, this.pageScrollRatio)
+        this.gl.update(time * 0.001, Math.abs(Math.sin(time * 0.001)))
       }
       requestAnimationFrame(() => this.tick())
     },
@@ -136,37 +127,12 @@ export default {
       top = Math.round(top * 100) / 100
       this.cssTransform = `scale(${scale}) translate(${left}px, ${top}px)`
     }
-
-    // renderGIF () {
-    //   this.gl.renderLoopGif(performance.now())
-    // }
-    // renderGIF: _.debounce(() => {
-    //   // console.log('___')
-    //   this.gl.renderLoopGif()
-    //   // console.log('I only get fired once every two seconds, max!')
-    // }, 2000)
   }
-  // computed: {
-  //   ...mapGetters([
-  //     'stageWidth',
-  //     'stageHeight'
-  //   ])
-  // },
-  // methods: {
-  //   updateWidth (event) {
-  //     this.$store.dispatch('updateStageSize', {width: event.target.value})
-  //   },
-  //   updateHeight (event) {
-  //     this.$store.dispatch('updateStageSize', {height: event.target.value})
-  //   }
-  // }
 }
 
 </script>
 
 <style lang="scss">
-
-// @import "../styles/variables";
 
 .webgl-canvas { 
   margin: 0;
@@ -176,20 +142,13 @@ export default {
   overflow: hidden;
   border: none;
   canvas {
-    // display: none;
     background: #cccccc;
-    
-    // display: none;
-    // &.canvas {
     position: absolute;
     width: 100%;
     height: 100%;
-    // }
     top: 0;
     left: 0;
-    // transform-origin: center;
     transform-origin: top left;
-    // transform: translate(50%, 50%)
   }
   .btn {
     background: #fafafa;
