@@ -147,6 +147,15 @@ export default {
       position: fixed;
       top: 10px;
       right: 20px;
+      width: 20px;
+      height: 30px;
+      border-radius: 5px;
+      transition: all ease 250ms;
+      background: rgba(255, 255, 255, 0);
+      cursor: pointer; 
+      &:hover {
+        background: rgba(255, 255, 255, .8);
+      }
       &:before,
       &:after {
         content: ' ';
@@ -155,8 +164,11 @@ export default {
         background: white;
         width: 3px;
         height: 20px;
+        left: 12.5px;
+        top: 5px;
         transform-origin: center;
         transform: rotate(45deg);
+        border: 1px solid black;
       }
       &:after {
         transform: rotate(-45deg);        
