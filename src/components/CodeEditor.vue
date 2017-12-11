@@ -1,45 +1,19 @@
 <template>
-  <div class="settings-form">
-    <label>Width:</label>
-    <input :value="frameWidth" 
-           @input="updateWidth" 
-           type="number" 
-           max="1000" 
-           maxlength="4"/>
-    
-    <br/>
-
-    <label>Height:</label>
-    <input :value="frameHeight" 
-           @input="updateHeight" 
-           type="number" 
-           max="1000" 
-           maxlength="4"/>
-    
-    <br/>
-<!-- 
-    <label>Shader:</label>
-    <textarea :value="shaderCode" 
-           @input="updateShaderCode" 
-           type="text" />
-    
- -->
-     <!-- <codemirror v-model="code" :options="editorOptions"></codemirror> -->
- <codemirror ref="myEditor"
-              :code="shaderCode" 
-              :options="editorOptions"
-              @ready="onEditorReady"
-              @focus="onEditorFocus"
-              @change="updateShaderCode">
-  </codemirror>
- 
-    <!-- <editor :content.sync="content" lang="html" theme="chrome" width="300" height="300" ></editor> -->
-
-   <!--  <button @click="toggle=!toggle">Toggle</button>
-    <transition name="demo">
-      <h3 v-show="toggle">Toggle Transition</h3>
-    </transition>
-   -->
+  <div 
+    class="code-editor"
+    v-bind:class="{ 
+      portrait: isPortrait, 
+      landscape: isLandscape 
+    }"
+  >
+    <codemirror 
+      ref="code-mirror"
+      :code="shaderCode" 
+      :options="editorOptions"
+      @ready="onEditorReady"
+      @focus="onEditorFocus"
+      @change="updateShaderCode"
+    ></codemirror>
   </div>
 </template>
 
@@ -48,7 +22,6 @@
 import { mapGetters } from 'vuex'
 
 import { codemirror } from 'vue-codemirror'
-// import { codemirror, CodeMirror } from 'vue-codemirror'
 
 // require active-line.js
 require('codemirror/addon/selection/active-line.js')
@@ -93,8 +66,9 @@ export default {
         // codemirror options
         tabSize: 2,
         mode: 'text/javascript',
-        theme: 'base16-dark',
+        // theme: 'base16-dark',
         lineNumbers: true,
+        // lineNumbers: true,
         line: true,
         keyMap: 'sublime',
         extraKeys: { 'Ctrl': 'autocomplete' },
@@ -107,26 +81,16 @@ export default {
   },
   components: {
     codemirror
-    // 'btn': Btn,
-    // 'editor': require('vue-ace-editor')
   },
-
-  // events: {
-  //   'vue-ace-editor:init': () => {
-  //     console.log('HA!!!')
-  //     require('brace/mode/html')
-  //     require('brace/theme/chrome')
-  //   }
-  // },
 
   computed: {
     ...mapGetters([
-      'frameWidth',
-      'frameHeight',
+      'isPortrait',
+      'isLandscape',
       'shaderCode'
     ]),
     editor () {
-      return this.$refs.myEditor.editor
+      return this.$refs.codeEditor.editor
     }
   },
 
@@ -142,10 +106,10 @@ export default {
       this.$store.dispatch('updateShaderCode', {code: code})
     },
     onEditorReady (editor) {
-      console.log('the editor is readied!', editor)
+      console.log('[editor is ready', editor)
     },
     onEditorFocus (editor) {
-      console.log('the editor is focus!', editor)
+      console.log('the editor is focus', editor)
     }
     // onEditorCodeChange (newCode) {
     //   console.log('this is new code', newCode)
@@ -160,9 +124,13 @@ export default {
 
 @import "../styles/variables";
 
-.settings-form {
-  
-
+.code-editor {
+  // height: auto;
+  max-height: 100%;
+  height: calc(100% - 32px);
+  .CodeMirror.cm-s-default {
+    height: 100%;
+  }
   /*
   .demo-enter-active {
     transition: all .8s ease;

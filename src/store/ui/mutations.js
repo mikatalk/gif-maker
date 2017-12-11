@@ -7,6 +7,10 @@ import * as types from './mutations-types'
 // })
 
 export default {
+  [types.WINDOW_UPDATE_SIZE] (state, { size }) {
+    state.window.width = size.width || state.window.width
+    state.window.height = size.height || state.window.height
+  },
   [types.UPDATE_FRAME_SIZE] (state, { size }) {
     state.frame.width = size.width || state.frame.width
     state.frame.height = size.height || state.frame.height

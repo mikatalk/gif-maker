@@ -64,6 +64,10 @@ const fragment = (shaderCode) => `
 export class GLLayer {
 
   constructor (canvas, shaderCode) {
+
+    // this.gifBgElement = document.getElementById('gif-bg')
+    this.glCanvas = document.querySelector('.webgl-canvas canvas')
+
     this.canvas = canvas
     let width = canvas.width
     let height = canvas.height
@@ -167,11 +171,11 @@ export class GLLayer {
   }
 
   update (elapsedTime, scrollRatio) {
-    // this.renderer.setClearColor(0xffffffff, 0)
+    this.renderer.setClearColor(0xffffffff, 0)
     this.material.uniforms.elapsedTime.value = elapsedTime * 0.001
     this.material.uniforms.scrollRatio.value = scrollRatio
     this.renderer.render(this.scene, this.camera)
-    document.body.style.backgroundImage = `url(${document.querySelector('.webgl-canvas canvas').toDataURL()})`
+    // this.gifBgElement.style.backgroundImage = `url(${this.glCanvas.toDataURL()})`
   }
 
   updateShaderCode (code) {
@@ -197,37 +201,30 @@ export class GLLayer {
       quality: 10
     })
 
-    function* idMaker () {
+    function* timeIntervalGenerator (max) {
       let i = 0
-      let l = 30
-
-      while (i < l) {
-        yield i / (l - 1)
+      while (i < max) {
+        yield i / (max - 1)
         i++
       }
     }
 
-    let gen = idMaker()
+    let gen = timeIntervalGenerator(30)
 
     while ( true ) {
       let value = gen.next().value;
       if (isNaN(value)) {
-        // gif.render()
         break;
       }
 
       let time = performance.now()
       this.update((time + (value * 300)), 0)
-      // console.log(gif, i / (l - 1))
       let img = new Image()
-      img.src = document.querySelector('.webgl-canvas canvas').toDataURL()
+      img.src = this.glCanvas.toDataURL()
       img.onload = () => {
-      //   this.$store.dispatch('addFrame', img)
-      //   // document.body.appendChild(img)
         gif.addFrame(img, {delay: 40, dispose: -1})
         console.log('Add at', value)
         if (value === 1) {
-
           gif.on('finished', (blob) => {
             // window.open(URL.createObjectURL(blob))
             let img = new Image()
@@ -237,68 +234,10 @@ export class GLLayer {
               document.body.appendChild(img)
             }
           })
-
           gif.render()
-          console.log('Render')
+          console.log('Rendering gif...')
         }
       }
-
     }
-//     let value = gen.next().value
-//     while(!isNaN(value)) {
-//       // console.log('val:', val)
-// // 
-//       this.update(value, 0)
-//       // console.log(gif, i / (l - 1))
-//       let img = new Image()
-//       img.src = document.querySelector('.webgl-canvas canvas').toDataURL()
-//       img.onload = () => {
-//       //   this.$store.dispatch('addFrame', img)
-//       //   // document.body.appendChild(img)
-//         gif.addFrame(img)
-//         console.log('HA', val)
-//         if (val === 1) {
-//           gif.render()
-//         }
-//       }
-//       val = gen.next().value
-//     }
-    //   // console.log(gen.next().value); // 0
-    // console.log(gen.next().value); // 1
-    // console.log(gen.next().value); // 2
-    // console.log(gen.next().value); // undefined
-    // console.log(gen.next().value); // undefined
-    // console.log(gen.next().value); // undefined
-
-
-    // // // ...
-    // for (let i = 0, l = 5; i < l; i++) {
-    //   this.update(i / l, 0)
-    //   // console.log(gif, i / (l - 1))
-    //   let img = new Image()
-    //   img.src = document.querySelector('.webgl-canvas canvas').toDataURL()
-    //   img.onload = () => {
-    //   //   this.$store.dispatch('addFrame', img)
-    //   //   // document.body.appendChild(img)
-    //     gif.addFrame(img)
-    //   }
-    //   // gif.addFrame(document.querySelector('.webgl-canvas canvas').toDataURL())
-    //   //     // console.log('NEW IMAGE', state.frame.gif)
-    //   //   // gif.addFrame(image)
-    //   // },
-
-    //   // [types.RENDER_GIF] (state) {
-    //   //   // gif.on('finished', (blob) => {
-    //   //   //   // window.open(URL.createObjectURL(blob))
-    //   //   //   let img = new Image()
-    //   //   //   img.src = URL.createObjectURL(blob)
-    //   //   //   img.onload = () => {
-    //   //   //     console.log('done')
-    //   //   //     document.body.appendChild(img)
-    //   //   //   }
-    //   //   // })
-    //   //   // gif.render()
-    //   // }
-    // }
   }
 }

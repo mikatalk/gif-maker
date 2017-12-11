@@ -1,12 +1,18 @@
 <template>
-  <div class="webgl-canvas" ref="container" @click="renderGIF()">
-    <canvas ref="canvas"
-            :width="frameWidth" 
-            :height="frameHeight"
-            >
-    </canvas>
-
-    <btn icon="mustache"></btn>
+  <div 
+    class="webgl-canvas" 
+    ref="container"
+    @click="renderGIF()"
+  >
+    <canvas 
+      ref="canvas"
+      class="canvas"
+      :width="frameWidth" 
+      :height="frameHeight"
+      v-bind:style="{
+        transform: cssTransform
+      }"
+    ></canvas>
   </div>
 </template>
 
@@ -26,14 +32,16 @@ export default {
 
   data () {
     return {
-      // toggle: true
-      // canvasScale: 1
-      gl: this.gl
+      gl: this.gl,
+      cssTransform: ''
     }
   },
 
   computed: {
     ...mapGetters([
+      'windowWidth',
+      'windowHeight',
+      'isPortrait',
       'frameWidth',
       'frameHeight',
       'shaderCode'
@@ -43,6 +51,7 @@ export default {
   mounted () {
     // console.log('OK?', this.shaderCode)
     this.gl = new GLLayer(this.$refs.canvas, this.shaderCode)
+    this.handleResize()
     // this.gl = new GLLayer(this.$refs.canvas,_.clone(this.shaderCode))
     this.running = true
     // this.gl.renderLoopGif()
@@ -56,6 +65,12 @@ export default {
   },
 
   watch: {
+    windowWidth (newWidth, oldWidth) {
+      this.handleResize()
+    },
+    windowHeight (newHeight, oldHeight) {
+      this.handleResize()
+    },
     frameWidth (newWidth, oldWidth) {
       this.handleResize()
     },
@@ -64,7 +79,7 @@ export default {
     },
     shaderCode (newCode, oldCode) {
       // return _.debounce((newCode, oldCode) => {
-      console.log('REFRESH')
+      // console.log('REFRESH')
       // (newCode, oldCode) {
       this.gl.updateShaderCode(this.shaderCode)
       // }, 2000)
@@ -88,6 +103,27 @@ export default {
       this.$refs.canvas.width = this.frameWidth
       this.$refs.canvas.height = this.frameHeight
       this.gl.handleResize(this.frameWidth, this.frameHeight)
+
+      let scale
+      let left
+      let top
+      if (this.isPortrait) {
+        scale = Math.min(
+          this.windowWidth / this.frameWidth,
+          this.windowHeight / 2 / this.frameHeight
+        )
+      } else {
+        scale = Math.min(
+          this.windowWidth / 2 / this.frameWidth,
+          this.windowHeight / this.frameHeight
+        )
+      }
+      left = (this.$refs.container.clientWidth / scale - this.frameWidth) / 2
+      top = (this.$refs.container.clientHeight / scale - this.frameHeight) / 2
+      scale = Math.round(scale * 100) / 100
+      left = Math.round(left * 100) / 100
+      top = Math.round(top * 100) / 100
+      this.cssTransform = `scale(${scale}) translate(${left}px, ${top}px)`
     },
 
     renderGIF () {
@@ -123,12 +159,27 @@ export default {
 // @import "../styles/variables";
 
 .webgl-canvas { 
-  margin: 10px 0;
+  margin: 0;
   padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
   border: none;
-  canvas{
+  canvas {
+    // display: none;
     background: #cccccc;
-    display: none;
+    
+    // display: none;
+    // &.canvas {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    // }
+    top: 0;
+    left: 0;
+    // transform-origin: center;
+    transform-origin: top left;
+    // transform: translate(50%, 50%)
   }
   .btn {
     background: #fafafa;

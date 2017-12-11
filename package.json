@@ -19,6 +19,7 @@
     "codemirror": "^5.32.0",
     "font-awesome": "^4.7.0",
     "gif.js": "https://github.com/jnordberg/gif.js/",
+    "lodash": "^4.17.4",
     "orbit-controls": "^1.2.0",
     "prerender-spa-plugin": "^2.1.0",
     "randomcolor": "^0.5.3",

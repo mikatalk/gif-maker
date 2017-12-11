@@ -1,4 +1,8 @@
 export default {
+  window: {
+    width: 1,
+    height: 1
+  },
   frame: {
     // gif: new GIF({
     //   workers: 1,
@@ -15,7 +19,6 @@ export default {
     blob: null,
     // shaderCode: 'alpha=1.0; c = vec3(1.0, vUv.xy);'
     shaderCode: `
-
 vec2 uv = vUv;
 float num = 5.;
 

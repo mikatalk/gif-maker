@@ -1,6 +1,9 @@
 import * as types from './mutations-types'
 
 export default {
+  windowUpdateSize ({ commit }, size) {
+    commit(types.WINDOW_UPDATE_SIZE, { size })
+  },
   updateFrameSize ({ commit }, size) {
     commit(types.UPDATE_FRAME_SIZE, { size })
   },
