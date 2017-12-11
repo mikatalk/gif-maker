@@ -51,7 +51,7 @@ const fragment = (shaderCode) => `
   }
 
 
-  void main() {
+  // void main() {
     // float alpha = 1.0;
     // vec3 color = uColor;
     // float elapsedTime = uElapsedTime;
@@ -60,14 +60,13 @@ const fragment = (shaderCode) => `
     ${shaderCode}
 
     // gl_FragColor = clamp(vec4( color, alpha), 0.0, 1.0);
-  }
+  // }
 `
 
 export class GLLayer {
 
   constructor (canvas, shaderCode) {
 
-    // this.gifBgElement = document.getElementById('gif-bg')
     this.glCanvas = document.querySelector('.webgl-canvas canvas')
 
     this.canvas = canvas
@@ -87,8 +86,6 @@ export class GLLayer {
         uElapsedTime: {value: 0},
         uLoopRatio: {value: 0},
         uColor: {value: new THREE.Color(randomcolor())}
-        // mouse: {value: new THREE.Vector2(this.mouseX, this.mouseY)},
-        // mouseVelocity: {value: new THREE.Vector2(this.previousMouseX, this.previousMouseY)}
       },
       vertexShader: vertex,
       fragmentShader: fragment(shaderCode),
@@ -118,20 +115,13 @@ export class GLLayer {
     // this.renderer.setPixelRatio(0.1)
     // this.renderer.setPixelRatio(0.5)
     // this.renderer.setPixelRatio(window.devicePixelRatio || 1)
-    // this.renderer.setPixelRatio(1)
+    this.renderer.setPixelRatio(1)
 
     // document.addEventListener('mousemove', () => this.onDocumentMouseMove(), false)
     // window.addEventListener('resize', this.handleResize.bind(this), false)
   }
 
-  // getContext () {
-  //   console.log('...!', this.canvas, this.canvas.getContext('2d'))
-  //   return this.canvas.getContext('2d')
-  // }
-
   unload () {
-    // document.addEventListener('mousemove', this.onDocumentMouseMove.bind(this), false)
-
     while (this.scene.children.length > 0) {
       const object = this.scene.children[this.scene.children.length - 1]
       deepDispose(object)
@@ -146,26 +136,6 @@ export class GLLayer {
     this.canvas.height = 1
   }
 
-  handleMouseMove (position) {
-    // // save previous position
-    // this.previousMouseX = this.mouseX
-    // this.previousMouseY = this.mouseY
-    // // save new position
-    // this.mouseX = position.x // event.clientX / window.innerWidth
-    // this.mouseY = position.y // 1.0 - event.clientY / window.innerHeight
-    // // save uniforms
-    // // this.materialMouseMap.uniforms.mouse.value.x = this.mouseX
-    // // this.materialMouseMap.uniforms.mouse.value.y = this.mouseY
-    // // // estimate velocity of movememt
-    // // let intensity = 50
-    // // let velX = (this.mouseX - this.previousMouseX) * intensity
-    // // velX = Math.min(0.5, Math.max(-0.5, velX))
-    // // let velY = (this.mouseY - this.previousMouseY) * intensity
-    // // velY = Math.min(0.5, Math.max(-0.5, velY))
-    // // this.materialMouseMap.uniforms.mouseVelocity.value.x = velX
-    // // this.materialMouseMap.uniforms.mouseVelocity.value.y = velY
-  }
-
   handleResize (width, height) {
     this.camera.aspect = width / height
     this.camera.updateProjectionMatrix()
@@ -177,11 +147,9 @@ export class GLLayer {
     this.material.uniforms.uElapsedTime.value = elapsedTime
     this.material.uniforms.uLoopRatio.value = loopRatio
     this.renderer.render(this.scene, this.camera)
-    // this.gifBgElement.style.backgroundImage = `url(${this.glCanvas.toDataURL()})`
   }
 
   updateShaderCode (code) {
-
     let gl = this.renderer.getContext()
     var shader = gl.createShader( gl.FRAGMENT_SHADER );
     gl.shaderSource( shader, fragment(code) );
@@ -194,23 +162,19 @@ export class GLLayer {
       this.material.needsUpdate = true
       console.log('+ OK +')
     }  
-   
   }
 
   renderLoopGif () {
     return new Promise((resolve, fail) => {
-
-      
       const gif = new GIF({
         workers: 8,
         quality: 10
       })
 
       function* timeIntervalGenerator (max) {
-        let i = 0
+        let i = 1 // skip first frame for perfect circle
         while (i < max) {
-          yield i / max
-          // yield i / (max - 1)
+          yield i / (max - 1)
           i++
         }
       }
@@ -224,7 +188,7 @@ export class GLLayer {
         }
 
         let time = performance.now()
-        this.update(time, value)
+        this.update(time, (1 + Math.sin(value * Math.PI * 2)) / 2)
         let img = new Image()
         img.src = this.glCanvas.toDataURL()
         img.onload = () => {
@@ -232,15 +196,7 @@ export class GLLayer {
           console.log('Add at', value)
           if (value === 1) {
             gif.on('finished', (blob) => {
-              // window.open(URL.createObjectURL(blob))
               resolve(URL.createObjectURL(blob))
-              // let img = new Image()
-              // img.src = URL.createObjectURL(blob)
-              // img.onload = () => {
-              //   console.log('done')
-              //   // document.body.appendChild(img)
-              //   resolve(img)
-              // }
             })
             gif.render()
             console.log('Rendering gif...')

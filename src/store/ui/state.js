@@ -15,16 +15,18 @@ export default {
     height: 320,
     blob: null,
     shaderCode: `
-float elapsedTime = uElapsedTime;
-float loopRatio = uLoopRatio;
-vec2 uv = vUv;
-vec3 color = uColor;
-float alpha = 1.0;
+void main() {
+  float elapsedTime = uElapsedTime;
+  float loopRatio = uLoopRatio;
+  vec2 uv = vUv;
+  vec3 color = uColor;
+  float alpha = 1.0;
 
-color.g *= mod(uv.x + loopRatio, 1.0);
-color.b *= mod(uv.y + loopRatio, 1.0);
+  color.g *= mod(uv.x + loopRatio, 1.0);
+  color.b *= mod(uv.y + loopRatio, 1.0);
 
-gl_FragColor = clamp(vec4( color, alpha), 0.0, 1.0);
+  gl_FragColor = clamp(vec4( color, alpha), 0.0, 1.0);
+}
 `
 //     shaderCode: `
 // vec2 uv = vUv;
